@@ -2,26 +2,27 @@
 
 public class Veicolo
 {
-    //varibili private
-    private string _targa;
-    private string _marca;
-    private string _modello;
-    private string _nome_conducente;
-    private int _km_percorsi;
-    private int _litri_carburante_nel_serbatorio;
-    private int _costo_assicurazione_kasko;
-    private int _costo_noleggio;
-    private double _costo_carburante_mancante;
-    private bool _presenza_kasko;
+	//varibili private
+	private string _targa;
+	private string _marca;
+	private string _modello;
+	private string _nome_conducente;
+	private int _km_percorsi;
+    private int _litri_carburante_attuali_nel_serbatoio;
+	private int _litri_carburante_iniziali_nel_serbatoio;
+	private double _costo_assicurazione_kasko;
+	private double _costo_noleggio;
+	private double _costo_carburante_mancante;
+	private bool _presenza_kasko;
+	
 
-
-    //variabili della classe
-    private static readonly int Vna = -1; //valore_non_accettabile
-    private Random rnd = new Random();
+	//variabili della classe
+	private static readonly int Vna = -1; //valore_non_accettabile
+	private Random rnd = new Random();
     private static double DefCostoCarb = 2.00;
     private static char Sep = ';';
-
-
+	
+	
 
     //properties
     public string Targa
@@ -33,42 +34,59 @@ public class Veicolo
             else
                 return _targa;
         }
-        private set { _targa = value; }
+	    private set { _targa = value; }
     }
-    public string Marca
+	public string Marca
     {
         get
         {
-            if (_marca == null)
+            if (_marca == null && Conducente != null)
                 throw new Exception("marca è null");
             else
                 return _marca;
-        }
-        set { _marca = value; }
     }
-    public string Modello
-    {
+        set 
+        {
+            if (value == null && Conducente != null)
+            {
+                throw new Exception("Marca non può essere null");
+            }
+            else if (GetStatoNoleggio())
+                throw new Exception("Auto noleggiata, dati non modificabili");
+            else                
+                _marca = value;
+        }
+    }
+	public string Modello
+	{
         get
         {
-            if (_modello == null)
+            if (_modello == null && Conducente != null)
                 throw new Exception("modello è null");
             else
                 return _modello;
         }
-        set { _modello = value; }
+        set 
+        {
+            if (value == null && Conducente != null)
+            {
+                throw new Exception("Modello non può essere null");
+            }
+            else if (GetStatoNoleggio())
+                throw new Exception("Auto noleggiata, dati non modificabili");
+            else
+                _modello = value;
+        }
     }
-    public string Conducente
-    {
+	public string Conducente
+	{
         get
         {
-            if (_nome_conducente == null)
-                throw new Exception("conducente è null");
-            else
                 return _nome_conducente;
         }
         set { _nome_conducente = value; }
     }
-    public int Km_Percorsi
+	public int Km_Percorsi
     {
         get
         {
@@ -76,32 +94,68 @@ public class Veicolo
                 throw new Exception("km percorsi invalido");
             else
                 return _km_percorsi;
-        }
-        set { _km_percorsi = value; }
     }
-    public int Litri_Nel_Serbatoio
+        protected set 
+        {
+            if (value < 0 && Conducente != null)
+                throw new Exception("Km prcorsi invalidi");
+            else 
+               _km_percorsi = value; 
+        }
+    }
+	public int Litri_Nel_Serbatoio_Iniziali 
+	{
+        get
+        {
+            if (_litri_carburante_iniziali_nel_serbatoio < 0)
+                throw new Exception("litri nel serbatorio invalidi");
+            else
+                return _litri_carburante_iniziali_nel_serbatoio;
+	}
+        private set 
+        {
+            if (value < 0 && Conducente != null)
+                throw new Exception("litri nel serbatoio invalidi");
+            else
+                _litri_carburante_iniziali_nel_serbatoio = value; 
+        }
+    }
+    public int Litri_Nel_Serbatoio_Attuali
     {
         get
         {
-            if (_litri_carburante_nel_serbatorio < 0)
-                throw new Exception("litri nel serbatorio invalido");
+            if (_litri_carburante_attuali_nel_serbatoio < 0)
+                throw new Exception("litri nel serbatorio invalidi");
             else
-                return _litri_carburante_nel_serbatorio;
+                return _litri_carburante_attuali_nel_serbatoio;
         }
-        set { _litri_carburante_nel_serbatorio = value; }
+        protected set
+        {
+            if (value < 0)
+                throw new Exception("litri nel serbatoio invalidi");
+            else
+                _litri_carburante_attuali_nel_serbatoio = value;
+        }
     }
-    public int Costo_Kasko
+
+    public double Costo_Kasko
     {
         get
         {
             if (_costo_assicurazione_kasko <= 0)
-                throw new Exception("assicurazione kasko non pagata");
+                throw new Exception("assicurazione kasko non presente");
             else
                 return _costo_assicurazione_kasko;
         }
-        set { _costo_assicurazione_kasko = value; }
+        private set
+        {
+            if (value < 0 && Conducente!= null)
+                throw new Exception("costo noleggio invalido");
+            else
+                _costo_assicurazione_kasko = value;
+        }
     }
-    public int Costo_Noleggio
+	public double Costo_Noleggio
     {
         get
         {
@@ -110,12 +164,18 @@ public class Veicolo
             else
                 return _costo_noleggio;
         }
-        set { _costo_noleggio = value; }
+        private set 
+        {
+            if (value < 0 && Conducente != null)
+                throw new Exception("costo noleggio invalido");
+            else
+                _costo_noleggio = value; 
+        }
     }
-    public double Costo_Carburante_Mancante
+	public double Costo_Carburante_Mancante
     {
         get { return _costo_carburante_mancante; }
-        set
+        private set
         {
             if (value < 0)
                 throw new Exception("costo carburante invalido");
@@ -123,71 +183,63 @@ public class Veicolo
                 _costo_carburante_mancante = value;
         }
     }
-    public bool Kasko
+	public bool Kasko
     {
-        get { return _presenza_kasko; }
-        private set { _presenza_kasko = value; }
-    }
+		get { return _presenza_kasko; }
+		private set { _presenza_kasko = value; }
+    }	
+	
 
 
-
-    //costruttori	
-    public Veicolo(string marca, string modello, string conducente, int km_Percorsi, int litri_Nel_Serbatoio, int costo_Kasko, int costo_Noleggio)
+	//costruttori	
+    public Veicolo(string marca, string modello, string conducente, int km_Percorsi, int litri_Nel_Serbatoio, double costo_Kasko, double costo_Noleggio, bool aggiuntakasko)
     {
-        Targa = GeneraTarga();
-        Marca = marca;
-        Modello = modello;
+		Targa = GeneraTarga();
+		Marca = marca;
+		Modello = modello;
         Conducente = conducente;
         Km_Percorsi = km_Percorsi;
-        Litri_Nel_Serbatoio = litri_Nel_Serbatoio;
+        Litri_Nel_Serbatoio_Iniziali = litri_Nel_Serbatoio;
         Costo_Kasko = costo_Kasko;
         Costo_Noleggio = costo_Noleggio;
         Costo_Carburante_Mancante = DefCostoCarb;
-        Kasko = CheckKasko();
+        Kasko = aggiuntakasko;
     }
-    public Veicolo() : this(null, null, null, Vna, Vna, Vna, Vna)
+    public Veicolo() : this(null, null, null, Vna, Vna, Vna, Vna, false)
     {
     }
-    public Veicolo(string marca, string modello, int litri_Nel_Serbatoio, int costo_Kasko, int costo_noleggio) : this(marca, modello, null, Vna, litri_Nel_Serbatoio, costo_Kasko, costo_noleggio)
+    public Veicolo(string marca, string modello, int litri_Nel_Serbatoio, double costo_Kasko, double costo_noleggio) : this(marca, modello, null, Vna, litri_Nel_Serbatoio, costo_Kasko, costo_noleggio, false)
     {
     }
 
 
     //funzioni private
-    private string GeneraTarga()
+	private string GeneraTarga()
     {
-        char[] targa = new char[7];
-        int val = 0;
-        for (int a = 0; a < 7; a++)
-        {
-            if (a >= 2 && a <= 4)
+		char[] targa = new char[7];
+		int val = 0;
+		for (int a = 0; a < 7; a++)
+		{
+			if (a >= 2 && a <= 4)
             {
-                val = rnd.Next(48, 58);
-                targa[a] = Convert.ToChar(val);
+				val = rnd.Next(48, 58);
+				targa[a] = Convert.ToChar(val);
             }
             else
             {
-                val = rnd.Next(65, 91);
-                targa[a] = Convert.ToChar(val);
+				val = rnd.Next(65, 91);
+				targa[a] = Convert.ToChar(val);
             }
-        }
-        return targa.ToString();
-    }
-    private bool CheckKasko()
-    {
-        if (Costo_Kasko > 0)
-            return true;
-        else
-            return false;
-    }
+        }	
+		return targa.ToString();
+    }    
 
 
     //funzioni pubbliche
-
     public override string ToString()
     {
         string str = Targa + Sep + Marca + Sep + Modello + Sep + Conducente;
-        string others = Km_Percorsi.ToString() + Sep + Litri_Nel_Serbatoio.ToString() + Sep + Costo_Kasko.ToString() + Sep + Costo_Noleggio.ToString();
+        string others = Km_Percorsi.ToString() + Sep + Litri_Nel_Serbatoio_Iniziali.ToString() + Sep + Costo_Kasko.ToString() + Sep + Costo_Noleggio.ToString();
         return str + Sep + others;
     }
     public bool Equals(Veicolo v)
@@ -198,14 +250,45 @@ public class Veicolo
     }
     public Veicolo Clone()
     {
-        Veicolo cloned = new Veicolo(this.Targa, this.Modello, this.Conducente, this.Km_Percorsi, this.Litri_Nel_Serbatoio, this.Costo_Kasko, this.Costo_Noleggio);
+        Veicolo cloned = new Veicolo(this.Targa, this.Modello, this.Conducente, this.Km_Percorsi, this.Litri_Nel_Serbatoio_Iniziali, this.Costo_Kasko, this.Costo_Noleggio, this.Kasko);
         return cloned;
     }
-    public bool CheckNoleggio()
+    public bool GetStatoNoleggio()
     {
         if (this.Conducente == null)
             return false;
         else return true;
     }
-
+    public void Noleggia(string conducente, bool kasko)
+    {
+        if (!GetStatoNoleggio())
+        {
+            this.Conducente = conducente;
+            this.Kasko = kasko;
+        }
+        else
+        {
+            throw new Exception("Auto già noleggiata");
+        }
+    }
+    public double Restituisci()
+    {       
+        if (!GetStatoNoleggio())
+        {
+            throw new Exception("Auto non noleggiata");
+        }
+        else
+        {
+            this.Conducente = null;
+            this.Kasko = false;
+            double costo = DefCostoCarb * (Litri_Nel_Serbatoio_Iniziali - Litri_Nel_Serbatoio_Attuali);
+            this.Km_Percorsi = 0;
+            if(Kasko)
+            {
+                costo += Costo_Kasko;
+            }
+            costo += Costo_Noleggio;
+            return costo;
+        }
+    }
 }

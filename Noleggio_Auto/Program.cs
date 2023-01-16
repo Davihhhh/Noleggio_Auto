@@ -17,10 +17,10 @@ namespace Noleggio_Auto
             string conducente = "andrea crotti";
             int km_percorsi = 200;
             int benzina = 50;
-            int costo_kasko = 5000;
-            int costo_noleggio = 50;
+            double costo_kasko = 5000;
+            double costo_noleggio = 50;
 
-            Veicolo vc = new Veicolo(marca, modello, conducente, km_percorsi, benzina, costo_kasko, costo_noleggio);
+            Veicolo vc = new Veicolo(marca, modello, conducente, km_percorsi, benzina, costo_kasko, costo_noleggio, true);
 
             //main
             Veicolo[] lista = new Veicolo[100];
