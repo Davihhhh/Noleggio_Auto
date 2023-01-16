@@ -2,26 +2,26 @@
 
 public class Veicolo
 {
-    //varibili private
-    private string _targa;
-    private string _marca;
-    private string _modello;
-    private string _nome_conducente;
-    private int _km_percorsi;
-    private int _litri_carburante_nel_serbatorio;
-    private int _costo_assicurazione_kasko;
-    private int _costo_noleggio;
-    private double _costo_carburante_mancante;
-    private bool _presenza_kasko;
+	//varibili private
+	private string _targa;
+	private string _marca;
+	private string _modello;
+	private string _nome_conducente;
+	private int _km_percorsi;
+	private int _litri_carburante_nel_serbatorio;
+	private int _costo_assicurazione_kasko;
+	private int _costo_noleggio;
+	private double _costo_carburante_mancante;
+	private bool _presenza_kasko;
+	
 
-
-    //variabili della classe
-    private static readonly int Vna = -1; //valore_non_accettabile
-    private Random rnd = new Random();
+	//variabili della classe
+	private static readonly int Vna = -1; //valore_non_accettabile
+	private Random rnd = new Random();
     private static double DefCostoCarb = 2.00;
     private static char Sep = ';';
-
-
+	
+	
 
     //properties
     public string Targa
@@ -33,9 +33,9 @@ public class Veicolo
             else
                 return _targa;
         }
-        private set { _targa = value; }
+		private set { _targa = value; }
     }
-    public string Marca
+	public string Marca
     {
         get
         {
@@ -43,32 +43,32 @@ public class Veicolo
                 throw new Exception("marca è null");
             else
                 return _marca;
-        }
+    }
         set { _marca = value; }
     }
-    public string Modello
-    {
+	public string Modello
+	{
         get
         {
             if (_modello == null)
                 throw new Exception("modello è null");
             else
                 return _modello;
-        }
+	}
         set { _modello = value; }
     }
-    public string Conducente
-    {
+	public string Conducente
+	{
         get
         {
             if (_nome_conducente == null)
                 throw new Exception("conducente è null");
             else
                 return _nome_conducente;
-        }
+	}
         set { _nome_conducente = value; }
     }
-    public int Km_Percorsi
+	public int Km_Percorsi
     {
         get
         {
@@ -76,21 +76,21 @@ public class Veicolo
                 throw new Exception("km percorsi invalido");
             else
                 return _km_percorsi;
-        }
+    }
         set { _km_percorsi = value; }
     }
-    public int Litri_Nel_Serbatoio
-    {
+	public int Litri_Nel_Serbatoio
+	{
         get
         {
             if (_litri_carburante_nel_serbatorio < 0)
                 throw new Exception("litri nel serbatorio invalido");
             else
                 return _litri_carburante_nel_serbatorio;
-        }
+	}
         set { _litri_carburante_nel_serbatorio = value; }
     }
-    public int Costo_Kasko
+	public int Costo_Kasko
     {
         get
         {
@@ -101,7 +101,7 @@ public class Veicolo
         }
         set { _costo_assicurazione_kasko = value; }
     }
-    public int Costo_Noleggio
+	public int Costo_Noleggio
     {
         get
         {
@@ -112,7 +112,7 @@ public class Veicolo
         }
         set { _costo_noleggio = value; }
     }
-    public double Costo_Carburante_Mancante
+	public double Costo_Carburante_Mancante
     {
         get { return _costo_carburante_mancante; }
         set
@@ -123,20 +123,20 @@ public class Veicolo
                 _costo_carburante_mancante = value;
         }
     }
-    public bool Kasko
+	public bool Kasko
     {
-        get { return _presenza_kasko; }
-        private set { _presenza_kasko = value; }
-    }
+		get { return _presenza_kasko; }
+		private set { _presenza_kasko = value; }
+    }	
+	
 
 
-
-    //costruttori	
+	//costruttori	
     public Veicolo(string marca, string modello, string conducente, int km_Percorsi, int litri_Nel_Serbatoio, int costo_Kasko, int costo_Noleggio)
     {
-        Targa = GeneraTarga();
-        Marca = marca;
-        Modello = modello;
+		Targa = GeneraTarga();
+		Marca = marca;
+		Modello = modello;
         Conducente = conducente;
         Km_Percorsi = km_Percorsi;
         Litri_Nel_Serbatoio = litri_Nel_Serbatoio;
@@ -146,32 +146,32 @@ public class Veicolo
         Kasko = CheckKasko();
     }
     public Veicolo() : this(null, null, null, Vna, Vna, Vna, Vna)
-    {
-    }
+	{		
+	}
     public Veicolo(string marca, string modello, int litri_Nel_Serbatoio, int costo_Kasko, int costo_noleggio) : this(marca, modello, null, Vna, litri_Nel_Serbatoio, costo_Kasko, costo_noleggio)
     {
     }
 
 
     //funzioni private
-    private string GeneraTarga()
+	private string GeneraTarga()
     {
-        char[] targa = new char[7];
-        int val = 0;
-        for (int a = 0; a < 7; a++)
-        {
-            if (a >= 2 && a <= 4)
+		char[] targa = new char[7];
+		int val = 0;
+		for (int a = 0; a < 7; a++)
+		{
+			if (a >= 2 && a <= 4)
             {
-                val = rnd.Next(48, 58);
-                targa[a] = Convert.ToChar(val);
+				val = rnd.Next(48, 58);
+				targa[a] = Convert.ToChar(val);
             }
             else
             {
-                val = rnd.Next(65, 91);
-                targa[a] = Convert.ToChar(val);
+				val = rnd.Next(65, 91);
+				targa[a] = Convert.ToChar(val);
             }
-        }
-        return targa.ToString();
+        }	
+		return targa.ToString();
     }
     private bool CheckKasko()
     {
